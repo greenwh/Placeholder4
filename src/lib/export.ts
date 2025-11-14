@@ -15,8 +15,9 @@ export function exportAsJSON(data: AppData, filename = 'life-planner-backup.json
  * Export data as PDF
  */
 export function exportAsPDF(data: AppData, filename = 'life-planner-report.pdf'): void {
-  const doc = new jsPDF();
-  let yPosition = 20;
+  try {
+    const doc = new jsPDF();
+    let yPosition = 20;
 
   // Title
   doc.setFontSize(20);
@@ -200,20 +201,25 @@ export function exportAsPDF(data: AppData, filename = 'life-planner-report.pdf')
     });
   }
 
-  // Footer on each page
-  const pageCount = doc.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    doc.setFontSize(8);
-    doc.text(
-      `Page ${i} of ${pageCount}`,
-      doc.internal.pageSize.getWidth() / 2,
-      doc.internal.pageSize.getHeight() - 10,
-      { align: 'center' }
-    );
-  }
+    // Footer on each page
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.text(
+        `Page ${i} of ${pageCount}`,
+        doc.internal.pageSize.getWidth() / 2,
+        doc.internal.pageSize.getHeight() - 10,
+        { align: 'center' }
+      );
+    }
 
-  doc.save(filename);
+    doc.save(filename);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    alert('Failed to generate PDF. Please check your data and try again.');
+    throw error;
+  }
 }
 
 /**
